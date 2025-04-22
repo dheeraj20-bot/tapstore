@@ -1,5 +1,5 @@
 "use client";
-import { ExternalLink } from "lucide-react";
+import {Link } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -13,9 +13,10 @@ import {
 
 export default function Home() {
   const images = [
-    { id: 1, title: "Screenshot 1" },
-    { id: 2, title: "Screenshot 2" },
-    { id: 3, title: "Screenshot 3" },
+    { id: 1, href: "/12.jpg" },
+    { id: 2, href: "/15.jpg" },
+    { id: 3, href: "/16.jpg" },
+    
   ];
 
   // Demo categories
@@ -26,26 +27,36 @@ export default function Home() {
 
       <div className="flex items-start mb-6">
         {/* App icon */}
-        <div className="w-20 h-20 bg-gray-300 rounded-xl mr-4"></div>
+        <div className="w-[120px] h-[120px] rounded-xl mr-4">
+          <img
+            src="/appicon.png"
+            alt="App Icon"
+            className="w-full h-full object-cover rounded-xl"
+          />
+        </div>
 
         {/* App title and install button */}
         <div className="flex-1">
-          <h1 className="text-xl font-bold">App name</h1>
+          <h1 className="text-[24px] font-bold">App name</h1>
           <p className="text-gray-400 text-sm mb-2">Sub-text of the app</p>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center mt-8  justify-between">
             <Drawer>
               <DrawerTrigger asChild>
-                <button className="bg-indigo-600 text-white px-6 py-1 rounded-full">
+                <button className="bg-indigo-600 w-[80px] text-white   py-1 rounded-full">
                   Install
                 </button>
               </DrawerTrigger>
               <DrawerContent className="bg-[#211B1B]  h-[30rem] "> 
                 <div className="mx-auto w-full max-w-sm">
                   <DrawerHeader>
-                    <DrawerTitle>Move Goal</DrawerTitle>
+                    <DrawerTitle className="text-white">  Quick Install</DrawerTitle>
                     <DrawerDescription>
-                      Set your daily activity goal.
+                      <ul className="list-disc text-lg text-white list-inside mb-4">
+                        <li>Tap the Share button</li>
+                        <li>Select “Add to Home Screen”</li>
+                      </ul>
+                     
                     </DrawerDescription>
                   </DrawerHeader>
                   <div className="p-4 pb-0">
@@ -67,10 +78,8 @@ export default function Home() {
                 </div>
               </DrawerContent>
             </Drawer>
-            {/* <button className="bg-indigo-600 text-white px-6 py-1 rounded-full">
-              Install
-            </button> */}
-            <ExternalLink className="text-blue-500" size={20} />
+            
+            <Link className="text-indigo-500" size={20} />
           </div>
         </div>
       </div>
@@ -95,18 +104,16 @@ export default function Home() {
 
       {/* Scrollable screenshots with hidden scrollbar using inline styles */}
       <div className="flex space-x-4 overflow-x-auto scrollbar-hide pb-4">
-        {/* Hide webkit scrollbar */}
-        {/* <style jsx>{`
-        div::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style> */}
+      
 
         {images.map((image) => (
-          <div
+          <img
+            src={image.href}
+            alt={`Screenshot ${image.id}`}
             key={image.id}
             className="flex-shrink-0 w-60 h-96 bg-gray-300 rounded-xl"
-          ></div>
+         /> 
+         
         ))}
       </div>
 
