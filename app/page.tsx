@@ -1,5 +1,5 @@
 "use client";
-import {Link } from "lucide-react";
+import {Link, Zap } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -19,8 +19,7 @@ export default function Home() {
     
   ];
 
-  // Demo categories
-  const categories = ["AI", "Category", "Category"];
+  const categories = ["AI", "💬", " "];
   return (
     <div className="bg-black/20 backdrop-blur-3xl max-w-[28rem] mx-auto py-20 text-white min-h-screen p-4">
       {/* App header section */}
@@ -43,43 +42,34 @@ export default function Home() {
           <div className="flex items-center mt-8  justify-between">
             <Drawer>
               <DrawerTrigger asChild>
-                <button className="bg-indigo-600 w-[80px] text-white   py-1 rounded-full">
+                <button className="bg-[#5551FE] w-[80px] text-white  py-1 rounded-full">
                   Install
                 </button>
               </DrawerTrigger>
-              <DrawerContent className="bg-[#211B1B]  h-[30rem] "> 
+              <DrawerContent className=" bg-gradient-to-b  from-[#211B1B] to-black h-[40rem] "> 
                 <div className="mx-auto w-full max-w-sm">
                   <DrawerHeader>
-                    <DrawerTitle className="text-white">  Quick Install</DrawerTitle>
-                    <DrawerDescription>
-                      <ul className="list-disc text-lg text-white list-inside mb-4">
-                        <li>Tap the Share button</li>
-                        <li>Select “Add to Home Screen”</li>
-                      </ul>
-                     
-                    </DrawerDescription>
+                    <DrawerTitle className="text-white flex mb-10 items-center  gap-2 justify-center"> <Zap className="w-4 h-4 text-white"/> <span className="text-[20px]"> Quick Install</span></DrawerTitle>
+                  
+                    
+                        <span>1.Tap the Share button</span>
+                        <div>2.Select “Add to Home Screen”</div>
                   </DrawerHeader>
-                  <div className="p-4 pb-0">
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="flex-1 text-center">
-                        <div className="text-7xl font-bold tracking-tighter"></div>
-                        <div className="text-[0.70rem] uppercase text-muted-foreground">
-                          Calories/day
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-3 h-[120px]"></div>
+
+                  <div className="py-10 flex justify-center">
+                    <img
+                      src="/panel.png"
+                      alt="App Icon"
+                      className=" w-[14rem]  h-[20rem]"
+                    />
                   </div>
-                  <DrawerFooter>
-                    <DrawerClose asChild>
-                      <button>Cancel</button>
-                    </DrawerClose>
-                  </DrawerFooter>
+                 
+                  
                 </div>
               </DrawerContent>
             </Drawer>
             
-            <Link className="text-indigo-500" size={20} />
+            <Link className="text-[#5551FE] mr-5 " size={20} />
           </div>
         </div>
       </div>
@@ -88,15 +78,7 @@ export default function Home() {
       <div className="flex space-x-4 mb-6">
         {categories.map((category, index) => (
           <div key={index} className="text-center">
-            <div
-              className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center ${
-                index === 0
-                  ? "bg-gray-800"
-                  : "bg-transparent border border-gray-700"
-              }`}
-            >
-              {index === 1 && <span>💬</span>}
-            </div>
+             <p className="text-xs block mt-1 text-white/50">Category</p>
             <span className="text-xs block mt-1">{category}</span>
           </div>
         ))}
