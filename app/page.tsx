@@ -1,11 +1,12 @@
-import { AppScreen } from "@/components/appScreen";
 
 
 export default function Home() {
   
   return (
    <>
-   <AppScreen/>
+     <h1>
+        HomePage
+     </h1>
    </>
   );
 }
