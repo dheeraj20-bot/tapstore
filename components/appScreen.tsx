@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {  Zap } from "lucide-react";
+import {  PlusSquare, Share, Zap } from "lucide-react";
 import {
   Drawer,
   DrawerContent,
@@ -19,7 +19,8 @@ export const AppScreen = () => {
   const { slug } = useParams();
   const router = useRouter(); 
   const [appData, setAppData] = useState<any>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Controls drawer open state
+  const [installStep, setInstallStep] = useState(1);
 
   const fetchAppBySlug = async (slug: string) => {
     const res = await fetch(
@@ -32,19 +33,39 @@ export const AppScreen = () => {
     setAppData(app);
   };
 
+  // const handleInstallClick = () => {
+  //   setIsDrawerOpen(true);
+  
+  //   // Start redirect timer
+  //   setTimeout(() => {
+  //     const targetUrl = appData?.targetAppurl || "/";
+  //     if (targetUrl.startsWith("http") || targetUrl.startsWith("/")) {
+  //       router.push(targetUrl);
+  //     } else {
+  //       console.error("Invalid redirect URL");
+  //     }
+  //   }, 4000);
+  // };
+
   const handleInstallClick = () => {
     setIsDrawerOpen(true);
-  
-    // Start redirect timer
-    setTimeout(() => {
-      const targetUrl = appData?.targetAppurl || "/";
-      if (targetUrl.startsWith("http") || targetUrl.startsWith("/")) {
-        router.push(targetUrl);
-      } else {
-        console.error("Invalid redirect URL");
-      }
-    }, 4000);
+    setInstallStep(1);
   };
+
+  // Continue to app in a new tab and show step 2
+  const handleContinueToApp = () => {
+    const targetUrl = appData?.targetAppurl || "/";
+    if (targetUrl.startsWith("http") || targetUrl.startsWith("/")) {
+      window.open(targetUrl, "_blank");
+      setInstallStep(2);
+    } else {
+      console.error("Invalid redirect URL");
+    }
+  };
+
+  const targetAppDomain = appData?.targetAppurl
+    ? new URL(appData.targetAppurl).hostname
+    : "example1.com";
 
   useEffect(() => {
     if (slug) {
@@ -92,7 +113,7 @@ export const AppScreen = () => {
                   Install
                 </button>
               </DrawerTrigger>
-              <DrawerContent className="bg-[#211B1B] h-[40rem]">
+              <DrawerContent className="bg-[#211B1B]">
                 <div className="mx-auto w-full max-w-sm">
                   <DrawerHeader>
                     <DrawerTitle className="text-white flex mb-10 items-center gap-2 justify-center">
@@ -100,8 +121,51 @@ export const AppScreen = () => {
                       <span className="text-[20px]"> Quick Install</span>
                     </DrawerTitle>
 
-                    <span>1. Tap the Share button</span>
-                    <div>2. Select "Add to Home Screen"</div>
+                    {installStep === 1 ? (
+                      <div className="space-y-6">
+                        <div className="text-center mb-4">
+                          <p className="text-white/80 mb-2">
+                            You'll be installing <span className="font-bold text-white">{targetAppDomain}</span>
+                          </p>
+                          <button
+                            onClick={handleContinueToApp}
+                            className="bg-[#5551FE] cursor-pointer px-4 py-2 text-white rounded-full mt-2"
+                          >
+                            Continue to {targetAppDomain}
+                          </button>
+                        </div>
+
+                        <div className="border-t border-gray-700 pt-4">
+                          <p className="text-center text-white/60 mb-4">After you continue, follow these steps:</p>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">1</div>
+                              <span>Tap the <Share className="w-4 h-4 inline mx-1" /> Share button</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">2</div>
+                              <span>Select <PlusSquare className="w-4 h-4 inline mx-1" /> "Add to Home Screen"</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      // Step 2 Confirmation
+                      <div className="space-y-6 text-center">
+                        <h3 className="text-lg font-medium">Installing {targetAppDomain}</h3>
+                        <p>We've opened {targetAppDomain} in a new tab.</p>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">1</div>
+                            <span>Tap the <Share className="w-4 h-4 inline mx-1" /> Share button</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">2</div>
+                            <span>Select <PlusSquare className="w-4 h-4 inline mx-1" /> "Add to Home Screen"</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </DrawerHeader>
 
                   <div className="py-5 flex justify-center">
