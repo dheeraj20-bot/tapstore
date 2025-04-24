@@ -13,11 +13,13 @@ import {
 import Markdown  from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
+import Loading from "@/app/[slug]/loading";
 
 export const AppScreen = () => {
   const { slug } = useParams();
+  const router = useRouter(); 
   const [appData, setAppData] = useState<any>(null);
-
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const fetchAppBySlug = async (slug: string) => {
     const res = await fetch(
@@ -30,16 +32,29 @@ export const AppScreen = () => {
     setAppData(app);
   };
 
+  const handleInstallClick = () => {
+    setIsDrawerOpen(true);
+  
+    // Start redirect timer
+    setTimeout(() => {
+      const targetUrl = appData?.targetAppurl || "/";
+      if (targetUrl.startsWith("http") || targetUrl.startsWith("/")) {
+        router.push(targetUrl);
+      } else {
+        console.error("Invalid redirect URL");
+      }
+    }, 4000);
+  };
+
   useEffect(() => {
     if (slug) {
       fetchAppBySlug(slug as string);
     }
   }, [slug]);
 
-  // Handle drawer open state
-  // Removed duplicate handleDrawerOpen function
-
-  
+  if (!appData) {
+    return <Loading />;
+  }
 
   return (
     <div className="bg-black/20 backdrop-blur-3xl max-w-[28rem] mx-auto py-20 text-white min-h-screen p-4">
@@ -69,9 +84,11 @@ export const AppScreen = () => {
           </p>
 
           <div className="flex items-center mt-8 justify-between">
-            <Drawer>
+            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
               <DrawerTrigger asChild>
-                <button className="bg-[#5551FE] cursor-pointer w-[80px] text-white py-1 rounded-full">
+                <button
+                onClick={handleInstallClick}
+                className="bg-[#5551FE] cursor-pointer w-[80px] text-white py-1 rounded-full">
                   Install
                 </button>
               </DrawerTrigger>
