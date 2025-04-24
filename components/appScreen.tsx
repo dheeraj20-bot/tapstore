@@ -174,7 +174,8 @@ export const AppScreen = () => {
                       autoPlay
                       loop
                       muted
-                      className="w-[250px]"
+                      disablePictureInPicture
+                      className="w-[250px] "
                     />
                   </div>
                 </div>
