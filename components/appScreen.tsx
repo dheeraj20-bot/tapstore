@@ -90,9 +90,7 @@ export const AppScreen = () => {
         <div className="w-[120px] h-[120px] rounded-xl mr-4">
           <img
             src={
-              appData?.appLogo?.documentId
-                ? `https://tapstore-strapi-k3av8.ondigitalocean.app${appData?.appLogo?.url}`
-                : "/appicon.png"
+              appData?.appLogo?.url
             }
             alt="App Icon"
             className="w-full h-full object-cover rounded-xl"
@@ -266,7 +264,7 @@ export const AppScreen = () => {
         {appData?.screenshot?.map((img: any) => (
           <img
             key={img.id}
-            src={`https://tapstore-strapi-k3av8.ondigitalocean.app${img.url}`}
+            src={img.url}
             alt={img.name}
             className="flex-shrink-0 h-96 object-cover rounded-xl"
           />
