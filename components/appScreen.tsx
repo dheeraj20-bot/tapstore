@@ -201,7 +201,7 @@ export const AppScreen = () => {
                     )}
                   </DrawerHeader>
 
-                  {isIOS && (
+                  (
                     <div className="py-5 flex justify-center">
                       <video
                         src={"/demo.mp4"}
@@ -212,7 +212,7 @@ export const AppScreen = () => {
                         className="w-[250px]"
                       />
                     </div>
-                  )}
+                  )
                 </div>
               </DrawerContent>
             </Drawer>
