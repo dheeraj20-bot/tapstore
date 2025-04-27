@@ -33,7 +33,7 @@ export const AppScreen = () => {
     );
     const json = await res.json();
     const app = json.data[0];
-    console.log(app);
+    // console.log(app);
 
     setAppData(app);
   };
