@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {  PlusSquare, Share, Zap } from "lucide-react";
+import { PlusSquare, Share, Zap } from "lucide-react";
 import {
   Drawer,
   DrawerContent,
@@ -10,17 +10,22 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import Markdown  from "react-markdown";
+import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import Loading from "@/app/[slug]/loading";
 
 export const AppScreen = () => {
   const { slug } = useParams();
-  const router = useRouter(); 
+  const router = useRouter();
   const [appData, setAppData] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Controls drawer open state
   const [installStep, setInstallStep] = useState(1);
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    setIsIOS(/iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()));
+  }, []);
 
   const fetchAppBySlug = async (slug: string) => {
     const res = await fetch(
@@ -35,7 +40,7 @@ export const AppScreen = () => {
 
   // const handleInstallClick = () => {
   //   setIsDrawerOpen(true);
-  
+
   //   // Start redirect timer
   //   setTimeout(() => {
   //     const targetUrl = appData?.targetAppurl || "/";
@@ -49,18 +54,17 @@ export const AppScreen = () => {
 
   const handleInstallClick = () => {
     setIsDrawerOpen(true);
-    setInstallStep(1);
+    // Skip "Continue to App" step for iOS users
+    setInstallStep(isIOS ? 2 : 1);
   };
 
   // Continue to app in a new tab and show step 2
   const handleContinueToApp = () => {
-    const targetUrl = appData?.targetAppurl || "/";
-    if (targetUrl.startsWith("http") || targetUrl.startsWith("/")) {
+    if (!isIOS) {
+      const targetUrl = appData?.targetAppurl || "/";
       window.open(targetUrl, "_blank");
-      setInstallStep(2);
-    } else {
-      console.error("Invalid redirect URL");
     }
+    setInstallStep(2);
   };
 
   const targetAppDomain = appData?.targetAppurl
@@ -108,8 +112,9 @@ export const AppScreen = () => {
             <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
               <DrawerTrigger asChild>
                 <button
-                onClick={handleInstallClick}
-                className="bg-[#5551FE] cursor-pointer w-[80px] text-white py-1 rounded-full">
+                  onClick={handleInstallClick}
+                  className="bg-[#5551FE] cursor-pointer w-[80px] text-white py-1 rounded-full"
+                >
                   Install
                 </button>
               </DrawerTrigger>
@@ -125,7 +130,10 @@ export const AppScreen = () => {
                       <div className="space-y-6">
                         <div className="text-center mb-4">
                           <p className="text-white/80 mb-2">
-                            You'll be installing <span className="font-bold text-white">{targetAppDomain}</span>
+                            You'll be installing{" "}
+                            <span className="font-bold text-white">
+                              {targetAppDomain}
+                            </span>
                           </p>
                           <button
                             onClick={handleContinueToApp}
@@ -136,15 +144,29 @@ export const AppScreen = () => {
                         </div>
 
                         <div className="border-t border-gray-700 pt-4">
-                          <p className="text-center text-white/60 mb-4">After you continue, follow these steps:</p>
+                          <p className="text-center text-white/60 mb-4">
+                            After you continue, follow these steps:
+                          </p>
                           <div className="space-y-3">
                             <div className="flex items-center gap-3">
-                              <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">1</div>
-                              <span>Tap the <Share className="w-4 h-4 inline mx-1" /> Share button</span>
+                              <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                                1
+                              </div>
+                              <span>
+                                Tap the{" "}
+                                <Share className="w-4 h-4 inline mx-1" /> Share
+                                button
+                              </span>
                             </div>
                             <div className="flex items-center gap-3">
-                              <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">2</div>
-                              <span>Select <PlusSquare className="w-4 h-4 inline mx-1" /> "Add to Home Screen"</span>
+                              <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                                2
+                              </div>
+                              <span>
+                                Select{" "}
+                                <PlusSquare className="w-4 h-4 inline mx-1" />{" "}
+                                "Add to Home Screen"
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -152,69 +174,93 @@ export const AppScreen = () => {
                     ) : (
                       // Step 2 Confirmation
                       <div className="space-y-6 text-center">
-                        <h3 className="text-lg font-medium">Installing {targetAppDomain}</h3>
+                        <h3 className="text-lg font-medium">
+                          Installing {targetAppDomain}
+                        </h3>
                         <p>We've opened {targetAppDomain} in a new tab.</p>
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
-                            <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">1</div>
-                            <span>Tap the <Share className="w-4 h-4 inline mx-1" /> Share button</span>
+                            <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                              1
+                            </div>
+                            <span>
+                              Tap the <Share className="w-4 h-4 inline mx-1" />{" "}
+                              Share button
+                            </span>
                           </div>
                           <div className="flex items-center gap-3">
-                            <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">2</div>
-                            <span>Select <PlusSquare className="w-4 h-4 inline mx-1" /> "Add to Home Screen"</span>
+                            <div className="bg-[#5551FE] rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                              2
+                            </div>
+                            <span>
+                              Select{" "}
+                              <PlusSquare className="w-4 h-4 inline mx-1" />{" "}
+                              "Add to Home Screen"
+                            </span>
                           </div>
                         </div>
                       </div>
                     )}
                   </DrawerHeader>
 
-                  <div className="py-5 flex justify-center">
-                    <video
-                      src={"/demo.mp4"}
-                      autoPlay
-                      loop
-                      muted
-                      disablePictureInPicture
-                      className="w-[250px] "
-                    />
-                  </div>
+                  {isIOS && (
+                    <div className="py-5 flex justify-center">
+                      <video
+                        src={"/demo.mp4"}
+                        autoPlay
+                        loop
+                        muted
+                        disablePictureInPicture
+                        className="w-[250px]"
+                      />
+                    </div>
+                  )}
                 </div>
               </DrawerContent>
             </Drawer>
 
-            <Link href={appData?.targetAppurl || "#"} target="_blank" className="inline-block mr-4">
-            <img src="/link.svg" alt="Apple" className="w-6 h-6 " />
+            <Link
+              href={appData?.targetAppurl || "#"}
+              target="_blank"
+              className="inline-block mr-4"
+            >
+              <img src="/link.svg" alt="Apple" className="w-6 h-6 " />
             </Link>
           </div>
         </div>
       </div>
-      <div className="border-t border-gray-800"/>
+      <div className="border-t border-gray-800" />
 
       <div className="flex justify-between max-w-[15rem] mb-6 pt-4">
-          <div className="text-center">
-            <p className="text-xs block mt-1 text-white/50">Rating</p>
-            <span className="text-xs block mt-1">{appData?.rating || "4.8"}</span>
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <span key={star} className="text-white/50 text-xs">
-                  ★
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="text-center">
-            <p className="text-xs block mt-1 text-white/50">Category</p>
-            <span className="text-xs block mt-1">{appData?.category || "AI tools"}</span>
-          </div>
-          <div className="text-center">
-            <p className="text-xs block mt-1 text-white/50">Platform</p>
-            <span className="text-xs block mt-1">
-              <img src="/apple.svg" alt="Apple" className="w-6 h-6 inline-block mr-1" />
-            </span>
+        <div className="text-center">
+          <p className="text-xs block mt-1 text-white/50">Rating</p>
+          <span className="text-xs block mt-1">{appData?.rating || "4.8"}</span>
+          <div className="flex">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span key={star} className="text-white/50 text-xs">
+                ★
+              </span>
+            ))}
           </div>
         </div>
+        <div className="text-center">
+          <p className="text-xs block mt-1 text-white/50">Category</p>
+          <span className="text-xs block mt-1">
+            {appData?.category}
+          </span>
+        </div>
+        <div className="text-center">
+          <p className="text-xs block mt-1 text-white/50">Platform</p>
+          <span className="text-xs block mt-1">
+            <img
+              src="/apple.svg"
+              alt="Apple"
+              className="w-6 h-6 inline-block mr-1"
+            />
+          </span>
+        </div>
+      </div>
 
-  
       {/* Scrollable screenshots */}
       <div className="flex space-x-4 overflow-x-auto scrollbar-hide pb-4">
         {appData?.screenshot?.map((img: any) => (
@@ -229,7 +275,7 @@ export const AppScreen = () => {
 
       {/* App description */}
       <div className="mt-6 border-t prose text-white/75 prose-h1:text-white prose-h2:text-white prose-h3:text-white prose-a:text-indigo-500  max-w-none text-sm border-gray-800 pt-4">
-      <Markdown children={appData?.description} remarkPlugins={[remarkGfm]} />
+        <Markdown children={appData?.description} remarkPlugins={[remarkGfm]} />
       </div>
     </div>
   );
