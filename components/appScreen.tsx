@@ -199,9 +199,7 @@ export const AppScreen = () => {
                         </div>
                       </div>
                     )}
-                  </DrawerHeader>
-
-                  (
+                  </DrawerHeader>    
                     <div className="py-5 flex justify-center">
                       <video
                         src={"/demo.mp4"}
